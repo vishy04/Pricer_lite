@@ -1,2 +1,2 @@
 # Pricer_lite
-Prediction Price Using Description using Fine Tuned LLama
+Prediction Price by Description using Fine Tuned LLama
