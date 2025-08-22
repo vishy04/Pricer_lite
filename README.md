@@ -1,6 +1,6 @@
-## Pricer
+## Pricer Lite
 
-End-to-end data preparation pipeline to load Amazon product metadata, filter/clean it, and build model-ready prompts for price-prediction tasks.
+A streamlined data preparation pipeline to load Amazon product metadata, filter/clean it, and build model-ready prompts for price-prediction tasks.
 
 ### What it does
 
@@ -15,28 +15,21 @@ End-to-end data preparation pipeline to load Amazon product metadata, filter/cle
 ## Project structure
 
 ```
-Pricer/
+Pricer_lite/
 ├─ src/
 │  ├─ __init__.py
 │  ├─ items.py           # Item class: cleaning, tokenization, prompt creation
-│  └─ loaders.py         # process_products_for_category(category_name)
+│  ├─ parallel_loader.py # ItemLoader class for parallel processing
+│  └─ loaders.py         # Convenience functions: process_products_for_category()
 ├─ notebooks/
-│  ├─ 1.data_investigation.ipynb
-│  └─ 2.data_loading.ipynb
-├─ data/
-│  ├─ raw/
-│  └─ processed/
-├─ models/
-│  ├─ baseline/
-│  ├─ frontier/
-│  └─ fine_tuned/
+│  ├─ 1.data_investigation.ipynb # Data exploration and analysis
+│  └─ 2.data_loading.ipynb       # Parallel loading examples
 ├─ results/
-│  ├─ charts/
-│  ├─ metrics/
-│  └─ reports/
-├─ docs/
-├─ requirements.txt
-├─ environment.yml
+│  └─ charts/            # Generated visualizations and plots
+├─ requirements.txt      # Python dependencies
+├─ environment.yml       # Conda environment specification
+├─ dir_setup.py         # Script to create full project structure
+├─ test_api.ipynb       # API testing notebook
 └─ README.md
 ```
 
@@ -46,25 +39,24 @@ Pricer/
 
 Use either Conda or venv. Ensure you activate your working environment before installing and running anything.
 
-Conda:
+**Conda (recommended):**
 
 ```bash
-cd Pricer
-conda env create -f environment.yml  # or: conda create -n pricer python=3.11
+cd Pricer_lite
+conda env create -f environment.yml
 conda activate pricer
-pip install -r requirements.txt
 ```
 
-venv:
+**venv:**
 
 ```bash
-cd Pricer
+cd Pricer_lite
 python3 -m venv .venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-First run will download the tokenizer and dataset cache to your user cache directory.
+**Note:** First run will download the tokenizer and dataset cache to your user cache directory (~/.cache/huggingface/).
 
 ---
 
@@ -88,7 +80,7 @@ print("Tokens:", sample.token_count)
 print("Prompt snippet:\n", sample.prompt[:300])
 ```
 
-### Jupyter notebook (from `Pricer/notebooks`)
+### Jupyter notebook (from `Pricer_lite/notebooks`)
 
 ```python
 import os, sys
@@ -97,6 +89,14 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), '..', 'src')))
 from loaders import process_products_for_category
 items = process_products_for_category("books")
 len(items)
+```
+
+**Alternative - Direct ItemLoader usage:**
+
+```python
+from parallel_loader import ItemLoader
+loader = ItemLoader("books")
+items = loader.load_and_process_data(workers=8)
 ```
 
 ---
@@ -146,20 +146,50 @@ if item.include:
     print(item.get_test_prompt())
 ```
 
-### `src/loaders.py` — Dataset loader
+### `src/loaders.py` — Convenience functions
 
-Entrypoint: `process_products_for_category(category_name: str) -> list[Item]`
+**Main entrypoint:** `process_products_for_category(category_name: str, workers: int = 8) -> List[Item]`
+
+Simple wrapper around the parallel loader for easy usage.
+
+### `src/parallel_loader.py` — ItemLoader class
+
+**Core class:** `ItemLoader(category_name: str)`
+
+**Main method:** `load_and_process_data(workers: int = 8) -> List[Item]`
 
 What it does:
 
 - Loads split `raw_meta_{category_name}` from `McAuley-Lab/Amazon-Reviews-2023`
 - Filters by a price range
-- Builds `Item` objects and keeps only those where `item.include == True`
+- Builds `Item` objects in parallel and keeps only those where `item.include == True`
 
-Config (edit in `src/loaders.py`):
+**Config constants:**
 
 - `MIN_PRICE = 0.50`
 - `MAX_PRICE = 999.49`
+- `CHUNK_SIZE = 1000`
+
+---
+
+## Additional Features
+
+### Notebooks
+
+- **`1.data_investigation.ipynb`** — Data exploration, analysis, and visualization of the Amazon dataset
+- **`2.data_loading.ipynb`** — Examples of parallel data loading and processing with multiple categories
+
+### Visualization Results
+
+The `results/charts/` directory contains generated plots:
+- Price distributions (`BPrice.png`, `Final Price.png`)
+- Token analysis (`tokens.png`, `Price vs Token.png`)
+- Content length analysis (`Lenghts Plot.png`)
+
+### Setup Utilities
+
+- **`dir_setup.py`** — Script to create the full project structure for larger implementations
+- **`test_api.ipynb`** — Notebook for testing API functionality
 
 ---
 
