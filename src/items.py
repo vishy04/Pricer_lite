@@ -37,6 +37,7 @@ class Item:
         self.price = price
         self.category = data.get('category', '')
         self.prompt = None
+        self.test_prompt = None #not storing this created a major problem. Fix : csv to pickle 
         self.token_count = 0
         self.include = False
         
