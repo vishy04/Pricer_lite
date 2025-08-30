@@ -1,10 +1,10 @@
-name: pricer
+name: product
 channels:
   - conda-forge
   - pytorch
   - defaults
 dependencies:
-  - python=3.13
+  - python=3.12
   - pip
   # Core ML and Data Processing (installed via conda)
   - pandas>=2.0.0
@@ -45,4 +45,5 @@ dependencies:
       - python-dotenv>=1.0.0
       - wandb>=0.15.0
       - tensorboard>=2.13.0
+      - gensim>=4.3.0
     # Note: gensim not included due to Python 3.13 compatibility issues
