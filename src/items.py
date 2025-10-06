@@ -40,7 +40,7 @@ class Item:
         self.test_prompt = None #not storing this created a major problem. Fix : csv to pickle 
         self.token_count = 0
         self.include = False
-        
+        #this does not include details which created a major problem when Feature Engineering
         #Immediate processing
         self._process_data(data)
     
@@ -57,6 +57,7 @@ class Item:
         # 2. Tokenize and validate token limits
         full_text = f"{self._clean_text(self.title)}\n{self._clean_text(content)}"
         tokens = self.tokenizer.encode(full_text, add_special_tokens=False)
+
         if len(tokens) < self.MIN_TOKENS:
             return  # Skip items with insufficient tokens
         tokens = tokens[:self.MAX_TOKENS]
