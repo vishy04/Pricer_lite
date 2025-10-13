@@ -1,0 +1,60 @@
+[project]
+name = "pricer"
+version = "0.1.0"
+description = "End-to-end data preparation pipeline for Amazon product price prediction"
+requires-python = ">=3.12"
+dependencies = [
+    # Core ML and Data Processing
+    "datasets==3.6.0",
+    "transformers>=4.30.0",
+    "torch>=2.0.0",
+    "scikit-learn>=1.3.0",
+    "pandas>=2.0.0",
+    "numpy>=1.24 , <2.0",
+    "matplotlib>=3.7.0",
+    "seaborn>=0.12.0",
+    
+    # Langchain for Frontier Models
+    "langchain",
+    "langchain-openai",
+    "langchain-anthropic",
+    "langchain-google-genai",
+    
+    # LLM APIs
+    "openai>=1.0.0",
+    "anthropic>=0.7.0",
+    "google-generativeai>=0.3.0",
+    
+    # HuggingFace and Model Management
+    "huggingface-hub>=0.16.0",
+    "accelerate>=0.20.0",
+    "peft>=0.4.0",
+    "bitsandbytes>=0.41.0; platform_system != 'Darwin'",
+    
+    # Data Processing and Utilities
+    "python-dotenv>=1.0.0",
+    "tqdm>=4.65.0",
+    "gensim>=4.3.0",
+    "scipy>=1.10 ,<1.12",
+    
+    # Jupyter and Development
+    "jupyter>=1.0.0",
+    "ipykernel>=6.25.0",
+    "notebook>=6.5.0",
+    "ipython>=8.0.0",
+    
+    # API and HTTP Utilities
+    "requests>=2.31.0",
+    "httpx>=0.24.0",
+    
+    # System and Production Utilities
+    "psutil>=5.9.0",
+    
+    # Optional: For advanced fine-tuning and monitoring
+    "wandb>=0.15.0",
+    "tensorboard>=2.13.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
